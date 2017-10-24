@@ -1,7 +1,0 @@
-Consumer Key (API Key)	6FTxbOcOaIwX1yzDCo4kJdxvt
-Consumer Secret (API Secret)	UHdnHVRSRwCbhXrGWExy1poVNP9buNo5KpeRiOsAK8C8OmcRkc
-
-Access Token	2439402091-TWGdQR1eOqPELxEigMs7de4RPXiT0aWg7ovuWfm
-Access Token Secret	iGsKk33zlpOjZ3oIInf7gvM0mIc8rZeG5sUCfnY3MyhR5
-
-
