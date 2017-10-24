@@ -5,6 +5,14 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 import geocoder
 import random
+import re
+
+emoji_pattern = re.compile("["
+    u"\U0001F600-\U0001F64F"  # emoticons
+    u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+    u"\U0001F680-\U0001F6FF"  # transport & map symbols
+    u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+    "]+", flags=re.UNICODE)
 
 # Authentication for Twitter API
 consumer_key = '6FTxbOcOaIwX1yzDCo4kJdxvt'
@@ -18,8 +26,8 @@ auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
 # Authentication for AWS ES
-AWS_ACCESS_KEY = 'AKIAIDEJ3RDNPLJNDEMA'
-AWS_SECRET_KEY = '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'
+AWS_ACCESS_KEY = 'AKIAIFBL2BHBX2WG6OZA'
+AWS_SECRET_KEY = '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'
 region = 'us-east-1'
 service = 'es'
 
@@ -38,19 +46,25 @@ es = Elasticsearch(
 wordList = ['serendipity','AlphaGo Zero','HKUST','Columbia University','Cloud Computing','Drunken Noodles','Facebook','Eason Chan','X-man','Gotham']
 max_twitts = 450
 
-search_result = [status._json for status in tweepy.Cursor(api.search,q='serendipity',since='2017-10-14',until='2017-10-21').items(max_twitts)]
+search_result = [status._json for status in tweepy.Cursor(api.search,q='X-man',since='2017-10-14',until='2017-10-21').items(max_twitts)]
 
 for i in range(0,len(search_result)):
     # change location 
     location = search_result[i]['user']['location']
+    # remove emojis,...
+    location = emoji_pattern.sub(r'', location)
+
+    # print(location)
+
     if location:
-        # remove emojis,...
-        ##############
         g = geocoder.google(location)
-        search_result[i]['user']['location'] = g.latlng
+        if g.latlng:
+            search_result[i]['user']['location'] = g.latlng
+        else:
+            search_result[i]['user']['location'] = [random.uniform(-90,90), random.uniform(-180,180)]
     else:
         search_result[i]['user']['location'] = [random.uniform(-90,90), random.uniform(-180,180)]
-    es.index(index="twitters", doc_type="serendipity", id=str(i), body=search_result[i])
+    es.index(index="twitters", doc_type="X-man", id=str(i), body=search_result[i])
 
 
 
