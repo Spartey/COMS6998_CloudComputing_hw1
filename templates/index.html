@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../static/style.css"/>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBzE9xAESye6Kde-3hT-6B90nfwUkcS8Yw&sensor=false">
+</script>
+ 
+<script>
+function initialize()
+{
+    var mapProp = {
+        center:new google.maps.LatLng(27.8188024,-7.3606365),
+        zoom:2,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+    var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+}
+ 
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+ 
+<body>
+<section class="container">
+    <form class="search" method="post" action="index.html">
+      <input type="search" name="q" placeholder="Search..." autocomplete="off">
+      <ul class="search-ac">
+        <li><a href="index.html">#1&nbsp;<span>serendipity</span></a></li>
+        <li><a href="index.html">#2&nbsp;<span>AlphaGo Zero</span></a></li>
+        <li><a href="index.html">#3&nbsp;<span>HKUST</span></a></li>
+        <li><a href="index.html">#4&nbsp;<span>Columbia University</span></a></li>
+        <li><a href="index.html">#5&nbsp;<span>Cloud Computing</span></a></li>
+        <li><a href="index.html">#6&nbsp;<span>Drunken Noodles</span></a></li>
+        <li><a href="index.html">#7&nbsp;<span>Facebook</span></a></li>
+        <li><a href="index.html">#8&nbsp;<span>Eason Chan</span></a></li>
+        <li><a href="index.html">#9&nbsp;<span>X-man</span></a></li>
+        <li><a href="index.html">#10&nbsp;<span>Gotham</span></a></li>
+      </ul>
+    </form>
+  </section>
+<div id="googleMap" style="width:1000px;height:600px;"></div>
+ 
+</body>
+</html>
