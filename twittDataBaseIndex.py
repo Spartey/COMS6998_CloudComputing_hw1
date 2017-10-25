@@ -6,6 +6,9 @@ from requests_aws4auth import AWS4Auth
 import geocoder
 import random
 import re
+import googlemaps
+
+gmaps = googlemaps.Client(key='AIzaSyBoSqXtWfy90BM7Mr0AMAoZcOOw5ZPrglM')
 
 emoji_pattern = re.compile("["
     u"\U0001F600-\U0001F64F"  # emoticons
@@ -26,8 +29,8 @@ auth.set_access_token(access_token, access_secret)
 api = tweepy.API(auth)
 
 # Authentication for AWS ES
-AWS_ACCESS_KEY = 'AKIAIFBL2BHBX2WG6OZA'
-AWS_SECRET_KEY = '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'
+AWS_ACCESS_KEY = 'AKIAJ64AHWCSS5HG6BDQ'
+AWS_SECRET_KEY = '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'
 region = 'us-east-1'
 service = 'es'
 
@@ -46,7 +49,8 @@ es = Elasticsearch(
 wordList = ['serendipity','AlphaGo Zero','HKUST','Columbia University','Cloud Computing','Drunken Noodles','Facebook','Eason Chan','X-man','Gotham']
 max_twitts = 450
 
-search_result = [status._json for status in tweepy.Cursor(api.search,q='X-man',since='2017-10-14',until='2017-10-21').items(max_twitts)]
+search_result = [status._json for status in tweepy.Cursor(api.search,q='Beethoven',since='2017-10-14',until='2017-10-21').items(max_twitts)]
+# print(len(search_result))
 
 for i in range(0,len(search_result)):
     # change location 
@@ -57,14 +61,14 @@ for i in range(0,len(search_result)):
     # print(location)
 
     if location:
-        g = geocoder.google(location)
-        if g.latlng:
-            search_result[i]['user']['location'] = g.latlng
+        result = gmaps.geocode(location)
+        if result:
+            search_result[i]['user']['location'] = result[0]['geometry']['location']
         else:
-            search_result[i]['user']['location'] = [random.uniform(-90,90), random.uniform(-180,180)]
+            search_result[i]['user']['location'] = {'lat':random.uniform(-90,90), 'lng':random.uniform(-180,180)}
     else:
-        search_result[i]['user']['location'] = [random.uniform(-90,90), random.uniform(-180,180)]
-    es.index(index="twitters", doc_type="X-man", id=str(i), body=search_result[i])
+        search_result[i]['user']['location'] = {'lat':random.uniform(-90,90), 'lng':random.uniform(-180,180)}
+    es.index(index="twitters", doc_type="serendipity", id=str(i), body=search_result[i])
 
 
 
