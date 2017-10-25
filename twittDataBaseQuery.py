@@ -25,6 +25,12 @@ def getTwitts(wordNumber):
 	# a list of json obj
 	list_twitts = search_result['hits']['hits']
 
-	print list_twitts[0]['_source']['user']['location']
-	# a list of coordinates
-	return list_twitts
+	# contain basic info of twitter obj
+	twitter_info = []
+	for i in list_twitts:
+		text = i['_source']['text'].replace('\n',' ')
+		twitter_info.append({'username':i['_source']['user']['name'], 'text':text, 'location':i['_source']['user']['location']})
+
+	 #print list_twitts[0]['_source']['user']['location']
+	 #a list of twitters
+	return twitter_info
