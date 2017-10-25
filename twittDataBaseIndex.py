@@ -49,15 +49,17 @@ es = Elasticsearch(
 wordList = ['serendipity','AlphaGo Zero','HKUST','Columbia University','Cloud Computing','Drunken Noodles','Facebook','Eason Chan','X-man','Gotham']
 max_twitts = 450
 
-search_result = [status._json for status in tweepy.Cursor(api.search,q='Beethoven',since='2017-10-14',until='2017-10-21').items(max_twitts)]
+search_result = [status._json for status in tweepy.Cursor(api.search,q='AlphaGo Zero',since='2017-10-14',until='2017-10-21').items(max_twitts)]
 # print(len(search_result))
 
+f = open('data.txt','w')
 for i in range(0,len(search_result)):
     # change location 
     location = search_result[i]['user']['location']
     # remove emojis,...
     location = emoji_pattern.sub(r'', location)
-
+    f.write(location)
+    f.write('\n')
     # print(location)
 
     if location:
@@ -68,11 +70,9 @@ for i in range(0,len(search_result)):
             search_result[i]['user']['location'] = {'lat':random.uniform(-90,90), 'lng':random.uniform(-180,180)}
     else:
         search_result[i]['user']['location'] = {'lat':random.uniform(-90,90), 'lng':random.uniform(-180,180)}
-    es.index(index="twitters", doc_type="serendipity", id=str(i), body=search_result[i])
+    es.index(index="twitters", doc_type="AlphaGo Zero", id=str(i), body=search_result[i])
+f.close()
 
-
-
-#print(es.get(index="twitters", doc_type="serendipity", id="5"))
 
 
 
