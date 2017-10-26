@@ -73,7 +73,7 @@ class MyStreamListener(tweepy.StreamListener):
         doc_count += 1
         es.create(index="twitterstream", doc_type=doc_type, id=str(doc_count), body=stream_result)
         self.num_tweets += 1
-        if self.num_tweets < 5:
+        if self.num_tweets < 1:
             return True
         else:
             return False
