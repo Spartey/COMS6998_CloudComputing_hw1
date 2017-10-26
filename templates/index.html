@@ -63,6 +63,7 @@ function linkify(inputText) {
   }).addTo(mymap);
   var x = 39;
   var y = 34;
+  var group1 = L.featureGroup();
   {% for twitt in data %}
         var text = '{{twitt['text']}}';
         var name = '{{twitt['username']}}';
@@ -71,9 +72,42 @@ function linkify(inputText) {
         //message = message.replace(/<br\s*[\/]?>/gim,"/n");
         x = {{twitt['location']['lat']}};
         y = {{twitt['location']['lng']}};
-        L.marker([x,y]).addTo(mymap).bindPopup(message).openPopup();
+        L.marker([x,y]).addTo(group1).addTo(mymap).bindPopup(message).openPopup();
   {% endfor %}
-  mymap.setView([x,y],2)
+  mymap.addLayer(group1);
+  mymap.setView([x,y],2);
+  var group2 = L.featureGroup();
+  var popup = L.popup();
+  function onMapClick(e) {
+    mymap.removeLayer(group1);
+    mymap.removeLayer(group2);
+    group2 = L.featureGroup();
+    popup
+        .setLatLng(e.latlng)
+        .setContent("No tweets nearby")
+        .openOn(mymap);
+    var clickcircle = L.circle(e.latlng, {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 1000000
+    }).addTo(mymap);
+    clickcircle.addTo(group2);
+    {% for twitt in data %}
+      var x = {{twitt['location']['lat']}};
+      var y = {{twitt['location']['lng']}};
+      if (e.latlng.distanceTo([x,y]) < 1000000) {
+        var text = '{{twitt['text']}}';
+        var name = '{{twitt['username']}}';
+        var message = '<p style="color:#800080">'+name+'</p>' +text;
+        message = linkify(message);
+        L.marker([x,y]).addTo(group2).addTo(mymap).bindPopup(message).openPopup();
+      }
+    {% endfor %}
+      mymap.addLayer(group2);
+      mymap.setView(e.latlng,4);
+   }
+  mymap.on('click', onMapClick);
  </script>
 </body>
 </html>
