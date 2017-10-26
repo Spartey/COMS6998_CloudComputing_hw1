@@ -65,13 +65,13 @@ class MyStreamListener(tweepy.StreamListener):
         else:
             stream_result['user']['location'] = {'lat':random.uniform(-90,90), 'lng':random.uniform(-180,180)}
         global doc_count
-		global doc_type
+        global doc_type
         doc_count += 1
         es.create(index="twitterstream", doc_type=doc_type, id=str(doc_count), body=stream_result)
         
 
 myStreamListener = MyStreamListener()
-myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener())
+myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
 
 
 def getTwitts(wordNumber):
