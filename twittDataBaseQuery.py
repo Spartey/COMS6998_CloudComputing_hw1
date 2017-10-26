@@ -51,6 +51,10 @@ doc_count = 0
 doc_type = ''
 
 class MyStreamListener(tweepy.StreamListener):
+    def __init__(self,api=None):
+        self.api = api
+        self.num_tweets = 0
+
     def on_status(self, status):
         stream_result = status._json
         location = str(stream_result['user']['location'])
@@ -68,6 +72,11 @@ class MyStreamListener(tweepy.StreamListener):
         global doc_type
         doc_count += 1
         es.create(index="twitterstream", doc_type=doc_type, id=str(doc_count), body=stream_result)
+        self.num_tweets += 1
+        if self.num_tweets < 5:
+            return True
+        else:
+            return False
         
 
 myStreamListener = MyStreamListener()
